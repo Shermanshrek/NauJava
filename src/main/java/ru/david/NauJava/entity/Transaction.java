@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,7 +28,7 @@ public class Transaction {
     @Column(name = "amount", precision = 15, scale = 2)
     private BigDecimal amount;
 
-    private LocalDate date;
+    private LocalDateTime date;
 
     private String description;
 
@@ -42,11 +41,11 @@ public class Transaction {
     private LocalDateTime createdAt;
 
     public Transaction() {
-        this.date = LocalDate.now();
+        this.date = LocalDateTime.now();
         this.createdAt = LocalDateTime.now();
     }
 
-    public Transaction(Category category, Account account, BigDecimal amount, LocalDate date) {
+    public Transaction(Category category, Account account, BigDecimal amount, LocalDateTime date) {
         this();
         this.category = category;
         this.account = account;

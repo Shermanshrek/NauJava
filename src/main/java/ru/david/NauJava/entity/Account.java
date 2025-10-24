@@ -40,10 +40,10 @@ public class Account {
     @OneToMany(mappedBy = "accounts", cascade = CascadeType.ALL)
     private List<Transaction> transactions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "fromAccounts", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fromAccount", cascade = CascadeType.ALL)
     private List<Transfer> outgoingTransfers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "toAccounts", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "toAccount", cascade = CascadeType.ALL)
     private List<Transfer> incomingTransfers = new ArrayList<>();
 
     public Account() {

@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,7 +28,7 @@ public class Transfer {
     @Column(name = "amount", precision = 15, scale = 2)
     private BigDecimal amount;
 
-    private LocalDate date;
+    private LocalDateTime date;
 
     private String description;
 
@@ -43,10 +42,10 @@ public class Transfer {
 
     public Transfer(){
         this.createdAt = LocalDateTime.now();
-        this.date = LocalDate.now();
+        this.date = LocalDateTime.now();
     }
 
-    public Transfer(Account fromAccount, Account toAccount, BigDecimal amount, LocalDate date) {
+    public Transfer(Account fromAccount, Account toAccount, BigDecimal amount, LocalDateTime date) {
         this();
         this.fromAccount = fromAccount;
         this.toAccount = toAccount;

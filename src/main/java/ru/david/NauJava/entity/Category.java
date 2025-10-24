@@ -31,12 +31,6 @@ public class Category {
 
     private LocalDateTime createdAt;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
-    private List<Transaction> transactions = new ArrayList<>();
-
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Budget> budgets = new ArrayList<>();
-
     public Category() {
         this.createdAt = LocalDateTime.now();
     }
