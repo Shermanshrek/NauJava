@@ -1,49 +1,63 @@
 package ru.david.NauJava.entity;
 
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "transactions")
+@Getter
+@Setter
 public class Transaction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "transaction_id", nullable = false)
     private Long id;
-    private double amount;
-    private String category;
-    private TransactionType type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", nullable = false)
+    private Account account;
+
+    @Column(name = "amount", precision = 15, scale = 2)
+    private BigDecimal amount;
+
+    private LocalDateTime date;
+
     private String description;
 
-    public Long getId() {
-        return id;
+    private String location;
+
+    private Boolean isRecurring = false;
+
+    private String recurrencePattern;
+
+    private LocalDateTime createdAt;
+
+    public Transaction() {
+        this.date = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
+    public Transaction(Category category, Account account, BigDecimal amount, LocalDateTime date) {
+        this();
         this.category = category;
+        this.account = account;
+        this.amount = amount;
+        this.date = date;
     }
 
-    public TransactionType getType() {
-        return type;
+    public boolean isIncome(){
+        return "income".equals(category.getType());
     }
 
-    public void setType(TransactionType type) {
-        this.type = type;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public boolean isExpense(){
+        return "expense".equals(category.getType());
     }
 }
