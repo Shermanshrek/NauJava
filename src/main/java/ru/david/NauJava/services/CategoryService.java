@@ -1,8 +1,7 @@
 package ru.david.NauJava.services;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import ru.david.NauJava.entity.Category;
 import ru.david.NauJava.entity.Transaction;
@@ -12,10 +11,14 @@ import ru.david.NauJava.repository.TransactionRepository;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class CategoryService {
     private final CategoryRepository repo;
     private final TransactionRepository transactRepo;
+
+    public CategoryService(CategoryRepository repo, TransactionRepository transactRepo) {
+        this.repo = repo;
+        this.transactRepo = transactRepo;
+    }
 
     @Transactional
     public void deleteCategory(Long id) {
