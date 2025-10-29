@@ -3,21 +3,23 @@ package ru.david.NauJava.repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
 import ru.david.NauJava.entity.Transaction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Repository
+@RepositoryRestResource(path = "transactions")
 public interface TransactionRepository extends CrudRepository<Transaction, Integer> {
     List<Transaction> findByDateBetweenAndAmountGreaterThanEqual(
-            LocalDate startDate, LocalDate endDate, BigDecimal minAmount);
+            LocalDateTime date, LocalDateTime date2, BigDecimal amount);
 
-    List<Transaction> findByDate(LocalDate date);
+    List<Transaction> findByDate(LocalDateTime date);
 
-    List<Transaction> findByDateBetween(LocalDate startDate, LocalDate endDate);
+    List<Transaction> findByDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 
     List<Transaction> findByAmountGreaterThanEqual(BigDecimal amount);
 
@@ -33,7 +35,7 @@ public interface TransactionRepository extends CrudRepository<Transaction, Integ
     @Query("select t from Transaction t where t.category.type = :categoryType")
     List<Transaction> findByCategoryType(@Param("categoryType") String categoryType);
 
-    @Query("select t from Transaction t where t.account.name = :accountName")
+    @Query("select t from Transaction t where t.accounts.name = :accountName")
     List<Transaction> findByAccountName(@Param("accountName") String accountName);
 
     @Query("select sum(t.amount) from Transaction t where t.category.id = :categoryId and " +
