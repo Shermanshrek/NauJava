@@ -11,6 +11,7 @@ import ru.david.NauJava.repository.criteriaAPI.TransactionCustomRepositoryImpl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,13 +30,13 @@ public class TransactionRepositoryTest {
         Category cat = createCategory("Еда", "expense");
         Account acc = createAccount("Карта", "debit_card");
         Transaction tx1 =  createTransaction(cat, acc, BigDecimal.valueOf(1500),
-                LocalDate.of(2025, 1, 15), "Продукты");
+                LocalDateTime.of(2025, 1, 15, 0, 0), "Продукты");
         Transaction tx2 = createTransaction(cat, acc, BigDecimal.valueOf(500),
-                LocalDate.of(2025, 1, 20), "Кафе");
+                LocalDateTime.of(2025, 1, 20, 23, 59), "Кафе");
 
         List<Transaction> result = transactionRepository.findByDateBetweenAndAmountGreaterThanEqual(
-                LocalDate.of(2025, 1, 1),
-                LocalDate.of(2025, 1, 31),
+                LocalDateTime.of(2025, 1, 1, 0, 0),
+                LocalDateTime.of(2025, 1, 31, 23, 59),
                 BigDecimal.valueOf(1000)
         );
         assertEquals(1, result.size());
@@ -47,7 +48,7 @@ public class TransactionRepositoryTest {
         Category cat = createCategory("Транспорт", "expense");
         Account acc = createAccount("Наличные", "cash");
         Transaction tx1 = createTransaction(cat, acc, BigDecimal.valueOf(500),
-                LocalDate.now(), "Такси");
+                LocalDateTime.now(), "Такси");
         List<Transaction> result = transactionRepository.findByCategoryName("Транспорт");
 
         assertEquals(1, result.size());
@@ -61,9 +62,9 @@ public class TransactionRepositoryTest {
         Account acc = createAccount("Счет", "debit_card");
 
         Transaction tx1 = createTransaction(incomeCategory, acc, BigDecimal.valueOf(50000),
-                LocalDate.now(), "Зарплата");
+                LocalDateTime.now(), "Зарплата");
         Transaction tx2 = createTransaction(expenseCategory, acc, BigDecimal.valueOf(1500),
-                LocalDate.now(), "Продукты");
+                LocalDateTime.now(), "Продукты");
 
         List<Transaction> incomes = transactionRepository.findByCategoryName("income");
         List<Transaction> expenses = transactionRepository.findByCategoryName("expense");
@@ -78,11 +79,11 @@ public class TransactionRepositoryTest {
         Account acc = createAccount("Кредитка", "credit_card");
 
         Transaction tx1 = createTransaction(category, acc, BigDecimal.valueOf(1000),
-                LocalDate.now(), "Ресторан");
+                LocalDateTime.now(), "Ресторан");
 
         List<Transaction> result = transactionRepository.findByAccountName("Кредитка");
         assertEquals(1, result.size());
-        assertEquals("Кредитка", result.getFirst().getAccount().getName());
+        assertEquals("Кредитка", result.getFirst().getAccounts().getName());
     }
 
     @Test
@@ -91,9 +92,9 @@ public class TransactionRepositoryTest {
         Account acc = createAccount("Карта", "debit_card");
 
         Transaction tx1 = createTransaction(category, acc, BigDecimal.valueOf(1000),
-                LocalDate.of(2025, 1, 15), "Продукты");
+                LocalDateTime.of(2025, 1, 15, 15, 0), "Продукты");
         Transaction tx2 = createTransaction(category, acc, BigDecimal.valueOf(500),
-                LocalDate.of(2025, 1, 20), "Кафе");
+                LocalDateTime.of(2025, 1, 20, 21, 52), "Кафе");
 
         BigDecimal total = transactionRepository.getTotalAmountByCategoryAndDateRange(
                 category.getId(),
@@ -111,7 +112,7 @@ public class TransactionRepositoryTest {
         Account acc = createAccount("Карта", "debit_card");
 
         Transaction tx1 = createTransaction(category, acc, BigDecimal.valueOf(2000),
-                LocalDate.now(), "Кино");
+                LocalDateTime.now(), "Кино");
         List<Transaction> result = transactionCustomRepository.findByCategoryNameCustom("Развлечения");
 
         assertEquals(1, result.size());
@@ -123,8 +124,8 @@ public class TransactionRepositoryTest {
         Category category = createCategory("Еда", "expense");
         Account account = createAccount("Карта", "debit_card");
 
-        createTransaction(category, account, BigDecimal.valueOf(2000), LocalDate.of(2024, 1, 10), "Ресторан");
-        createTransaction(category, account, BigDecimal.valueOf(800), LocalDate.of(2024, 1, 25), "Кафе");
+        createTransaction(category, account, BigDecimal.valueOf(2000), LocalDateTime.of(2025, 1, 10, 20, 0), "Ресторан");
+        createTransaction(category, account, BigDecimal.valueOf(800), LocalDateTime.of(2025, 1, 25, 19, 34), "Кафе");
 
         List<Transaction> result = transactionCustomRepository.findByDateBetweenAndAmountGreaterThanEqualCustom(
                 LocalDate.of(2024, 1, 1),
@@ -154,7 +155,7 @@ public class TransactionRepositoryTest {
         return accountRepository.save(account);
     }
 
-    private Transaction createTransaction(Category category, Account account, BigDecimal amount, LocalDate date, String description) {
+    private Transaction createTransaction(Category category, Account account, BigDecimal amount, LocalDateTime date, String description) {
         Transaction transaction = new Transaction();
         transaction.setCategory(category);
         transaction.setAccount(account);
