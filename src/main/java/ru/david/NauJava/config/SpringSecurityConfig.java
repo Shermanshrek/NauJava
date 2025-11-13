@@ -26,7 +26,8 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/registration", "/login", "/logout", "/error").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").hasRole("ADMIN")
-                        .requestMatchers("/api/**", "/transactions/**").authenticated()
+                        //.requestMatchers("/api/**", "/transactions/**").authenticated()
+                        .requestMatchers("/api/reports/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
