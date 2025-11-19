@@ -1,7 +1,6 @@
 package ru.david.NauJava.repository;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.david.NauJava.entity.Account;
@@ -18,12 +17,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@RequiredArgsConstructor
 public class TransactionRepositoryTest {
     private final TransactionRepository transactionRepository;
     private final CategoryRepository categoryRepository;
     private final AccountRepository accountRepository;
     private final TransactionCustomRepositoryImpl transactionCustomRepository;
+
+    public TransactionRepositoryTest(TransactionRepository transactionRepository, CategoryRepository categoryRepository, AccountRepository accountRepository, TransactionCustomRepositoryImpl transactionCustomRepository) {
+        this.transactionRepository = transactionRepository;
+        this.categoryRepository = categoryRepository;
+        this.accountRepository = accountRepository;
+        this.transactionCustomRepository = transactionCustomRepository;
+    }
 
     @Test
     void testFindByDateBetweenAndAmountGreaterThanEqual_QueryMethod() {
@@ -83,7 +88,7 @@ public class TransactionRepositoryTest {
 
         List<Transaction> result = transactionRepository.findByAccountName("Кредитка");
         assertEquals(1, result.size());
-        assertEquals("Кредитка", result.getFirst().getAccounts().getName());
+        assertEquals("Кредитка", result.getFirst().getAccount().getName());
     }
 
     @Test
