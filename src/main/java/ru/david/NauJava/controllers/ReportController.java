@@ -2,11 +2,16 @@ package ru.david.NauJava.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.david.NauJava.entity.Report;
 import ru.david.NauJava.services.ReportService;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -23,7 +28,17 @@ public class ReportController {
     @GetMapping
     public ResponseEntity<String> getReportsInfo() {
         logger.info("GET request to /api/reports");
-        return ResponseEntity.ok("""
+        try {
+            ClassPathResource resource = new ClassPathResource("templates/reports-info.html");
+            String htmlContent = Files.readString(Path.of(resource.getURI()));
+
+            return ResponseEntity.ok()
+                    .header("Content-Type", "text/html; charset=UTF-8")
+                    .body(htmlContent);
+
+        } catch (IOException e) {
+            logger.error("Error reading HTML template: {}", e.getMessage(), e);
+            return ResponseEntity.ok("""
             <html>
                 <body>
                     <h1>API отчетов</h1>
@@ -33,6 +48,7 @@ public class ReportController {
                 </body>
             </html>
             """);
+        }
     }
 
     @PostMapping

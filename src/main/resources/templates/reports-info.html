@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API отчетов</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .info-block {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .code {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .button {
+            background: #28a745;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .button:hover {
+            background: #218838;
+        }
+
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📊 API отчетов</h1>
+
+    <div class="info-block">
+        <h2>Создание отчета</h2>
+        <p>Для создания отчета отправьте POST запрос или нажмите кнопку:</p>
+        <div class="code">POST /api/reports</div>
+        <button class="button" onclick="createReport()">Создать новый отчет</button>
+    </div>
+
+    <div class="info-block">
+        <h2>Получение отчета</h2>
+        <p>Для получения отчета отправьте GET запрос:</p>
+        <div class="code">GET /api/reports/{id}</div>
+        <p><strong>Пример:</strong> GET /api/reports/1</p>
+    </div>
+
+    <div class="info-block">
+        <h2>Статусы отчетов</h2>
+        <ul>
+            <li><strong>Создан</strong> - отчет в процессе формирования</li>
+            <li><strong>Завершен</strong> - отчет готов к просмотру</li>
+            <li><strong>Ошибка</strong> - при формировании произошла ошибка</li>
+        </ul>
+    </div>
+
+    <div id="result" class="result" style="display: none;"></div>
+</div>
+
+<script>
+    async function createReport() {
+        const button = document.querySelector('.button');
+        const result = document.getElementById('result');
+
+        button.disabled = true;
+        button.textContent = 'Создание отчета...';
+        result.style.display = 'none';
+
+        try {
+            const response = await fetch('/api/reports', {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                const reportId = await response.text();
+                result.innerHTML =
+                    '<div class="success">' +
+                    '<p><strong>Отчет создан!</strong></p>' +
+                    '<p>ID отчета: ' + reportId + '</p>' +
+                    '<a href="/api/reports/' + reportId + '" target="_blank">Посмотреть отчет</a>' +
+                    '</div>';
+                result.style.display = 'block';
+            } else {
+                throw new Error('HTTP error: ' + response.status);
+            }
+        } catch (error) {
+            result.innerHTML =
+                '<div class="error">' +
+                '<p><strong>Ошибка:</strong></p>' +
+                '<p>' + error.message + '</p>' +
+                '</div>';
+            result.style.display = 'block';
+        } finally {
+            button.disabled = false;
+            button.textContent = 'Создать новый отчет';
+        }
+    }
+</script>
+</body>
+</html>
