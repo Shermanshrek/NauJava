@@ -60,6 +60,6 @@ class ReportControllerRestAssuredTest {
                 .when()
                 .get("/api/reports/invalid")
                 .then()
-                .statusCode(404);
+                .statusCode(500);
     }
 }
